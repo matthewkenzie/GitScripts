@@ -1,0 +1,105 @@
+# if scale=-1 will normalize to unit integral
+# to add a space to leg use \ to add = use EQ
+# varName must go first for each plot
+# plotName must go last for each plot
+# for each line draw option should go last
+
+outDir=plots
+canv=550,700
+
+varName=LeadJPt
+xtitle=Lead Jet Pt
+leg=0.6,0.6,0.89,0.89
+grid=1
+logy=1
+drawResid=bkg:diff:same
+type=bkg    color=801    width=2 legStr=Background   style=1001 draw=f    
+type=data   color=1      width=2 legStr=Data         marker=20  draw=lep  
+plotName=LeadJPtDatBkg
+
+varName=higgs_mass
+xtitle=m_{#gamma#gamma}
+leg=0.6,0.6,0.89,0.89
+grid=1
+drawResid=bkg:diff:same
+type=bkg    color=801    width=2 legStr=Background   style=1001 draw=f    
+type=data   color=1      width=2 legStr=Data         marker=20  draw=lep  
+plotName=HiggsM
+
+canv=750,700
+varName=higgs_pt
+xtitle=p_{T}(#gamma#gamma) (GeV)
+leg=0.6,0.6,0.89,0.89
+drawResid=bkg:frac:new
+grid=1
+type=bkg    color=801    width=2  draw=f    legStr=Background  style=1001
+type=data   color=1      width=2  draw=lep  legStr=Data        marker=20 
+plotName=HiggsPtDatBkg
+
+varName=LeadJPt
+xtitle=Lead Jet Pt
+leg=0.6,0.6,0.89,0.89
+type=bkg    norm=1   color=801    width=2  draw=f       legStr=Background     style=1001
+type=ggh    norm=1   color=4      width=2  draw=hist    legStr=0^{+}\(ggh)   
+type=vbf    norm=1   color=2      width=2  draw=hist    legStr=0^{+}\(vbf)   
+type=gggrav norm=1   color=418    width=2  draw=hist    legStr=2_{m}^{+}\(gg)
+plotName=LeadJPtNorm
+
+varName=higgs_pt
+xtitle=p_{T} (#gamma#gamma) 
+leg=0.6,0.6,0.89,0.89
+type=bkg    norm=1   color=801    width=2  draw=f       legStr=Background      style=1001 
+type=ggh    norm=1   color=4      width=2  draw=hist    legStr=0^{+}\(ggh)   
+type=vbf    norm=1   color=2      width=2  draw=hist    legStr=0^{+}\(vbf)   
+type=gggrav norm=1   color=418    width=2  draw=hist    legStr=2_{m}^{+}\(gg)
+plotName=HiggsPtNorm
+
+varName=LeadJPt
+xtitle=Lead Jet Pt
+ytitle=Efficiency
+drawEfficiency=1
+grid=1
+leg=0.6,0.11,0.89,0.4
+type=bkg    norm=1   color=801    width=3  draw=hist    legStr=Background
+type=ggh    norm=1   color=4      width=3  draw=hist    legStr=0^{+}\(ggh)
+type=vbf    norm=1   color=2      width=3  draw=hist    legStr=0^{+}\(vbf)
+type=gggrav norm=1   color=418    width=3  draw=hist    legStr=2_{m}^{+}\(gg)
+plotName=LeadJPtEff
+
+varName=higgs_pt
+xtitle=p_{T} (#gamma#gamma)
+ytitle=Efficiency
+drawEfficiency=1
+grid=1
+leg=0.6,0.11,0.89,0.4
+type=bkg    norm=1   color=801    width=3  draw=hist    legStr=Background  
+type=ggh    norm=1   color=4      width=3  draw=hist    legStr=0^{+}\(ggh)   
+type=vbf    norm=1   color=2      width=3  draw=hist    legStr=0^{+}\(vbf)   
+type=gggrav norm=1   color=418    width=3  draw=hist    legStr=2_{m}^{+}\(gg)
+plotName=HiggsPtEff
+
+varName=LeadJPt
+xtitle=Efficiency
+ytitle=VBF Efficiency
+drawROC=vbf
+grid=1
+leg=0.6,0.11,0.89,0.4
+type=bkg    color=801    width=3  draw=l    legStr=Background
+type=ggh    color=4      width=3  draw=l    legStr=0^{+}\(ggh) 
+type=vbf    color=2      width=3  draw=l    legStr=0^{+}\(vbf)
+type=gggrav color=418    width=3  draw=l    legStr=2_{m}^{+}\(gg)
+plotName=LeadJPtROC
+
+varName=higgs_pt
+xtitle=Efficiency
+ytitle=VBF Efficiency
+xrangeuser=0.5,1.
+yrangeuser=0.6,1.
+drawROC=vbf
+grid=1
+leg=0.6,0.11,0.89,0.4
+type=bkg    color=801    width=3  draw=l    legStr=Background  
+type=ggh    color=4      width=3  draw=l    legStr=0^{+}\(ggh)
+type=vbf    color=2      width=3  draw=l    legStr=0^{+}\(vbf)
+type=gggrav color=418    width=3  draw=l    legStr=2_{m}^{+}\(gg)
+plotName=HiggsPtROC

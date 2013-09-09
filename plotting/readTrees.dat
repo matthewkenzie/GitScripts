@@ -1,0 +1,18 @@
+# tree opts
+treeDir=spin_trees
+dataTrees=Data
+bkgTrees=diphojet_sherpa_8TeV,gjet_20_8TeV_pf,gjet_40_8TeV_pf,qcd_30_8TeV_ff,qcd_30_8TeV_pf
+ppTrees=diphojet_sherpa_8TeV
+pfTrees=gjet_20_8TeV_pf,gjet_40_8TeV_pf,qcd_30_8TeV_pf
+ffTrees=qcd_30_8TeV_ff
+sigTrees=ggh_m125_8TeV,vbf_m125_8TeV,wzh_m125_8TeV,tth_m125_8TeV
+altTrees=ggh:ggh_m125_8TeV
+altTrees=vbf:vbf_m125_8TeV
+altTrees=gggrav:gg_grav_m125_8TeV
+altTrees=qqgrav:qq_grav_m125_8TeV
+
+# hist opts
+hist=LeadJPt,,125,0,250       var=myVBFLeadJPt
+hist=higgs_mass,,80,100,180   var=higgs_mass
+hist=Mjj,,500,0,1000          var=myVBF_Mjj
+hist=higgs_pt,,125,0,250      var=form:r.TLorentzVector(tv:higgs_px,tv:higgs_py,tv:higgs_pz,tv:higgs_E).Pt()
