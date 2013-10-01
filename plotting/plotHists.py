@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# vim: ts=2 sw=2 expandtab
 
 import os,sys
 from optparse import OptionParser
