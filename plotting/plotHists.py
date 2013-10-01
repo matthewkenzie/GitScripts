@@ -145,6 +145,7 @@ def applyMyOpts(hist):
 
 def drawHists(hists,leg,name):
 
+  os.system('mkdir -p %s'%opts.outDir)
   canvas = r.TCanvas()
   if opts.canv[0]>0 and opts.canv[1]>0:
     #canvas = r.TCanvas("canvas","",opts.canv[0],opts.canv[1])
