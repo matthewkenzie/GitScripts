@@ -16,7 +16,7 @@ groupPlot.add_option("--canv",default=[-1,-1])
 groupPlot.add_option("--varName",type="str",default=',',help="variable name")
 groupPlot.add_option("--xtitle",type="str",default='')
 groupPlot.add_option("--ytitle",type="str",default='')
-groupPlot.add_option("--xrangeuser",default=[-1.,-.1])
+groupPlot.add_option("--xrangeuser",default=[-1.,-1.])
 groupPlot.add_option("--yrangeuser",default=[-1.,-1.])
 groupPlot.add_option("--logx",default=False,action="store_true")
 groupPlot.add_option("--logy",default=False,action="store_true")
@@ -71,7 +71,7 @@ def setAttributes(hist):
       if optName=='rebin': hist.Rebin(opts.rebin)
       if optName=='norm': hist.Scale(opts.norm/hist.Integral())
       if optName=='scale': hist.Scale(opts.scale)
-      if optName=='legStr': leg.AddEntry(hist,opts.legStr.replace('\\',' ').replace('EQ','='),opts.draw.replace('hist','l'))
+      if optName=='legStr' and leg: leg.AddEntry(hist,opts.legStr.replace('\\',' ').replace('EQ','='),opts.draw.replace('hist','l'))
       
       if optName=='draw':
         if opts.draw=='lep':
@@ -90,6 +90,8 @@ def setAttributes(hist):
           hist.SetFillStyle(0)
           hist.SetLineWidth(opts.width)
           hist.SetLineStyle(opts.style)
+        elif opts.draw=='col' or opts.draw=='colz' or opts.draw=='surf':
+          continue
         else:
           print 'WARNING -- unrecognised draw option for %s -- %s'%(hist.GetName(),opts.draw)
           continue
@@ -152,7 +154,8 @@ def drawHists(hists,leg,name):
     #canvas = r.TCanvas("canvas","",opts.canv[0],opts.canv[1])
     canvas.SetWindowSize(opts.canv[0],opts.canv[1])
     canvas.SetCanvasSize(opts.canv[0],opts.canv[1])
-    canvas.SetLeftMargin(0.15)
+    canvas.SetLeftMargin(0.1)
+    canvas.SetRightMargin(0.15)
 
   if opts.resOpt=='same':
     padUp = r.TPad("upper","",0.,0.33,1.0,1.0)
@@ -199,7 +202,7 @@ def drawHists(hists,leg,name):
     for hist in hists[1:]:
       hist[0].Draw('%ssame'%hist[1])
 
-  leg.Draw()
+  if leg: leg.Draw()
   canvas.SetTickx()
   canvas.SetTicky()
   if opts.grid: 
@@ -216,7 +219,7 @@ def drawHists(hists,leg,name):
     if opts.wait: 
       forms = raw_input('File format? (comma seperated - pdf default)\n')
       if forms=='q' or forms=='quit': sys.exit()
-      for form in forms:
+      for form in forms.split(','):
         canvas.Print('%s/%s.%s'%(opts.outDir,name,form))
     canvas.Print('%s/%s.pdf'%(opts.outDir,name))
    
@@ -296,6 +299,7 @@ def drawHists(hists,leg,name):
 
 ## start main
 inComment=False
+leg=None
 
 for line in datlines:
   # skip comments and new lines
@@ -330,11 +334,14 @@ for line in datlines:
   
   # legend
   if line.startswith('leg'):
-    leg=line.split('=')[1].split(',')
-    assert(len(leg)==4)
-    leg = r.TLegend(float(leg[0]),float(leg[1]),float(leg[2]),float(leg[3]))
-    leg.SetFillColor(0)
-    leg.SetLineColor(0)
+    if line.split('=')[1]=='None' or line.split('=')[1]=='off':
+      leg=None
+    else:
+      leg=line.split('=')[1].split(',')
+      assert(len(leg)==4)
+      leg = r.TLegend(float(leg[0]),float(leg[1]),float(leg[2]),float(leg[3]))
+      leg.SetFillColor(0)
+      leg.SetLineColor(0)
 
   # ROC curves
   if line.startswith('drawROC'):

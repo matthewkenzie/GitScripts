@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # vim: ts=2 sw=2 expandtab
 
+import sys
+import os
+
 from optparse import OptionParser
 parser = OptionParser()
 parser.add_option("-i","--infile")
@@ -26,9 +29,11 @@ def fillHists(trees,hists,histConfig):
     histArr=[]
     for hcfg in histConfig: # this loops each histogram type
       histOpts = hcfg[0].split(',')
-      assert(len(histOpts)==5)
-      hist = r.TH1F('%s_%s'%(treeName,histOpts[0]),histOpts[1],int(histOpts[2]),float(histOpts[3]),float(histOpts[4]))
-      #th1VarCfg = [hist,hcfg[1]]
+      assert(len(histOpts)==5 or len(histOpts)==8) # only 1D and 2D distributions supported
+      if len(histOpts)==5:
+        hist = r.TH1F('%s_%s'%(treeName,histOpts[0]),histOpts[1],int(histOpts[2]),float(histOpts[3]),float(histOpts[4]))
+      if len(histOpts)==8:
+        hist = r.TH2F('%s_%s'%(treeName,histOpts[0]),histOpts[1],int(histOpts[2]),float(histOpts[3]),float(histOpts[4]),int(histOpts[5]),float(histOpts[6]),float(histOpts[7]))
       histArr.append(hist)
     if treeName in hists.keys():
       print 'WARNING -- overwriting this key %s'%treeName
@@ -42,14 +47,34 @@ def fillHists(trees,hists,histConfig):
         tree.GetEntry(ev)
         for i,hcfg in enumerate(histConfig): # this loops each histogram type
           varCfg = hcfg[1]
-          if 'form:' in varCfg:
-            var=varCfg.split('form:')[1]
-            var=var.replace('tv:','tree.')
-            execLine = 'hists[treeName][i].Fill(%s,tree.evweight)'%var
+          if len(varCfg.split(';'))==1: # 1D hist
+            if 'form:' in varCfg:
+              var=varCfg.split('form:')[1]
+              var=var.replace('tv:','tree.')
+              execLine = 'hists[treeName][i].Fill(%s,tree.evweight)'%var
+              exec execLine
+            else: 
+              var=varCfg
+              hists[treeName][i].Fill(getattr(tree,var),tree.evweight)
+          
+          elif len(varCfg.split(';'))==2: # 2D hist
+            var1 = varCfg.split(';')[0]
+            var2 = varCfg.split(';')[1]
+            if 'form:' in var1:
+              var1=var1.split('form:')[1]
+              var1=var1.replace('tv:','tree.')
+            else:
+              var1 = 'tree.%s'%var1
+            if 'form:' in var2:
+              var2=var2.split('form:')[1]
+              var2=var2.replace('tv:','tree.')
+            else:
+              var2 = 'tree.%s'%var2
+            execLine = 'hists[treeName][i].Fill(%s,%s,tree.evweight)'%(var1,var2)
             exec execLine
-          else: 
-            var=varCfg
-            hists[treeName][i].Fill(getattr(tree,var),tree.evweight)
+              
+          else:
+            sys.exit('ERROR - only 1D and 2D histograms supported')
 
 def writeHists(hists,outfile):
   outfile.cd()
@@ -90,6 +115,8 @@ for line in datlines:
       if opt.startswith('hist'):
         cfg.append(opt.split('=')[1].strip('\n'))
       if opt.startswith('var'):
+        cfg.append(opt.split('=')[1].strip('\n'))
+      if opt.startswith('cut'):
         cfg.append(opt.split('=')[1].strip('\n'))
     histConfig.append(cfg)
 
