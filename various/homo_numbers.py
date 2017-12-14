@@ -1,7 +1,38 @@
 #!/usr/bin/env python
 
+import math
+
 #cache = {}
 T_cache = {}
+
+def sum_digits(n):
+  s = 0
+  while n:
+    s += n % 10
+    n //= 10
+  return s
+
+def quickerMethod( n ):
+  hdigits = int(math.log10(n)+1)
+  odd = hdigits%2
+  hdigits //= 2
+
+  s1 = 0
+  s2 = 0
+
+  for i in range(hdigits):
+    s1 += n % 10
+    n //= 10
+
+  if odd: n //= 10
+
+  for i in range(hdigits):
+    s2 += n %10
+    #if s2> s1: return False # quicker with this comparison removed
+    n //= 10
+
+  if s1==s2: return True
+  else: return False
 
 def getSumOfFirstLastDigits( number, verbose=False ):
 
@@ -23,6 +54,16 @@ def getSumOfFirstLastDigits( number, verbose=False ):
   sum_last_no2 = 0
 
   if verbose: print 'i =', number, 'First Half = ', st[:ndigf], 'Last Half = ', st[ndigl:],
+
+  # check pallendrome
+  pall = True
+  for n in range(ndigf+1):
+    if st[n]!=st[-1-n]:
+      pall = False
+      break
+  if pall:
+    print 'Pallendrome'
+    return 1
 
   for dig in st[:ndigf]:
     #print int(dig)
@@ -59,7 +100,8 @@ def T(n, verbose=False):
       break
 
   for i in range( 10**myn, 10**n ):
-    current_homo = getSumOfFirstLastDigits(i, verbose)
+    #current_homo = getSumOfFirstLastDigits(i, verbose)
+    current_homo = quickerMethod( i )
     if current_homo > 0:
       sum_homos += i
 
@@ -67,7 +109,6 @@ def T(n, verbose=False):
   print 'T(%d) = '%n, sum_homos
   return sum_homos
 
-#getSumOfFirstLastDigits(22,True)
 import sys
 
 if len(sys.argv)!=2:
