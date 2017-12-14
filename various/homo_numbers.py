@@ -67,15 +67,13 @@ def T(n, verbose=False):
   print 'T(%d) = '%n, sum_homos
   return sum_homos
 
-#for i in range(101):
-  #print i, getSumOfFirstLastDigits(i, False)
-#st = str(i)
-#ndigf = int(round(float(len(st))/2))
-#ndigl = ndigf if len(st)%2==0 else ndigf-1
-#print i, st[:ndigf], st[ndigl:]
-
 #getSumOfFirstLastDigits(22,True)
 import sys
+
+if len(sys.argv)!=2:
+  print 'Usage: python homo_numbers.py <n>'
+  print '\t where n is the T(n) number you want to find'
+
 maxn = int(sys.argv[1])
 for i in range(1,maxn+1):
   T(i)
