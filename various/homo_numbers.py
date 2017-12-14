@@ -73,6 +73,7 @@ import sys
 if len(sys.argv)!=2:
   print 'Usage: python homo_numbers.py <n>'
   print '\t where n is the T(n) number you want to find'
+  sys.exit()
 
 maxn = int(sys.argv[1])
 for i in range(1,maxn+1):
